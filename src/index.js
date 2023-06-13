@@ -174,3 +174,78 @@ function sendMail({ toEmail, subject, body }) {
 
 //#endregion
 
+//#region Nesne ve Sınıflar
+
+// class Vehicle {
+// }
+
+// class Bicycle extends Vehicle {
+//   pedal() {
+//     // Bir bisiklete göre hareket mekanizmasını sağlayacak
+//   }
+// }
+
+// class Car extends Vehicle {
+//   drive() {
+//     // Bir bisiklete göre hareket mekanizmasını sağlayacak
+//   }
+// }
+
+class Vehicle {
+  move(position) {
+    throw new Error("Not impelemented");
+  }
+  // Bir araca göre hareket mekanizmasını sağlayacak
+}
+
+class Bicycle extends Vehicle {
+  move(position) {
+    // Bir bisiklete göre hareket mekanizmasını sağlayacak
+  }
+}
+
+class Car extends Vehicle {
+  move(position) {
+    // Bir bisiklete göre hareket mekanizmasını sağlayacak
+  }
+}
+
+const bicycleModel = new Bicycle();
+const carModel = new Car();
+
+// Overloading
+// function travel(vehicle : Bicycle){
+
+// }
+// function travel(vehicle : Car){
+
+// }
+// Fakat JS'de overloading yoktur. Aşağıdaki gibi kullanılabilir.
+function travel(position, vehicle) {
+  // JS'i tip güvenli hale getirmek için manuel kod yazılmaması gerekiyor.
+  // Onun yerine daha iyi testler, daha çok code review ve daha dikkatli kodlama yapılması
+  // Veya günümüzde JS'i tip güvenli ve daha gelişmiş programlama dillerinin özelliklerini ekleyen Typescript kullanılmalıdır.
+  // if(typeof position !== "number")
+  // {
+  //     throw new Error("Invalid position type");
+  // }
+  // if(!vehicle instanceof Vehicle)
+  // {
+  //     throw new Error("Invalid vehicle");
+  // }
+
+  // if(vehicle instanceof Bicycle){
+  //     vehicle.pedal(position);
+  // } else if (vehicle instanceof Car){
+  //     vehicle.drive(position);
+  // }
+  vehicle.move(position);
+}
+
+travel(bicycleModel);
+travel(carModel);
+
+//-----------------------------------------
+
+
+//#endregion
