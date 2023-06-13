@@ -108,7 +108,26 @@ createMenu({
 //   });
 // }
 
+// Fonksiyonlar ilgili class'ın veya component'in yaşam döngüsüne göre sıralanmalıdır
+function componentDidMount() {
+  // Yaşam döngüsüne göre sıralanmalıdır
+  sendWelcomeEmailToEndUsers();
+}
+// İsme göre sıralama için editör'lerin outline özelliği kullanılabilir.
 function sendWelcomeEmailToEndUsers(endUsers) {
+  // Eski kodları silmemiz gerekiyor. Çünkü halihazırda versiyon kontrol sistemlerinde (git) her bir satır bizim için arşivleniyor, saklanıyor. Gerekirse commit geçmişinden eski kodlara geri dönüş sağlanabilir. (Eğitim amaçlı eski kodlar silinmemiştir)
+  //   const filteredEndUsers = [];
+  //   for (let i = 0; i < endUsers.length; i++) {
+  //     if (endUsers[i].active) {
+  //       filteredEndUsers.push(endUsers[i]);
+  //     }
+  //   }
+
+  //   for (let i = 0; i < filteredEndUsers.length; i++) {
+  //     const element = filteredEndUsers[i];
+  //     // ... Aşağıdaki işlemleri burada da yapabilirim.
+  //   }
+  // Fakat hard code yazmak yerine, mümkün olduğunca fonksiyonel programlamayı tercih edebiliriz.
   endUsers.filter(isActive).forEach((endUser) => {
     const user = getUser(endUser.userId);
     const emailContent = { subject: "Hoşgeldiniz", body: "Merhaba" };
@@ -127,10 +146,18 @@ function sendWelcomeEmailToEndUsers(endUsers) {
     });
   });
 }
-
+// Çağırılan fonksiyonlar, çağıran fonksiyona olabildiğince yakın olmalıdır
+// function isNotActive(entity) {
 function isActive(entity) {
   // Koşul fonksiyonu veya değişkenleri mümkün olduğunca açıklayıcı ve pozitif isimlendirin
-  return entity.active;
+  //endUsers.filter(!isActive)
+
+  //   return  entity.active && (entity.deadline > Date.now() || (entity.deadline > Date.now() && entity.persistent)));
+  const isActive = entity.active;
+  const isDeadlineValid = entity.deadline > Date.now();
+  const isPersistent = entity.persistent;
+
+  return isActive && (isDeadlineValid || (!isDeadlineValid && isPersistent));
 }
 
 function getUser(userId) {
@@ -143,4 +170,7 @@ function sendMail({ toEmail, subject, body }) {
   EmailClient.disconnect();
 }
 
+// Başka fonskiyonlara bu noktadan devam edilmeli.
+
 //#endregion
+
