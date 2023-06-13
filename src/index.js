@@ -129,6 +129,7 @@ function sendWelcomeEmailToEndUsers(endUsers) {
   //   }
   // Fakat hard code yazmak yerine, mümkün olduğunca fonksiyonel programlamayı tercih edebiliriz.
   endUsers.filter(isActive).forEach((endUser) => {
+    // fluent
     const user = getUser(endUser.userId);
     const emailContent = { subject: "Hoşgeldiniz", body: "Merhaba" };
     // Koşul yapılarını iş akışına göre dallanmalar için kullanın
@@ -210,6 +211,12 @@ class Car extends Vehicle {
   }
 }
 
+class Plane extends Vehicle {
+  move(position) {
+    // Bir bisiklete göre hareket mekanizmasını sağlayacak
+  }
+}
+
 const bicycleModel = new Bicycle();
 const carModel = new Car();
 
@@ -238,14 +245,157 @@ function travel(position, vehicle) {
   //     vehicle.pedal(position);
   // } else if (vehicle instanceof Car){
   //     vehicle.drive(position);
+  // } else if (vehicle instanceof Plane){
+  //     vehicle.fly(position);
   // }
   vehicle.move(position);
 }
 
-travel(bicycleModel);
-travel(carModel);
+const targetPosition = 10;
+travel(targetPosition, bicycleModel);
+travel(targetPosition, carModel);
 
 //-----------------------------------------
 
+// function RentalCarOld({ brand, model, color, dailyPrice, isAutomatic, isDiesel, isAirConditioned }){
+//     let brand = brand;
+//     let model = model;
+//     let color = color;
+//     let dailyPrice = dailyPrice;
+//     let isAutomatic = isAutomatic;
+//     let isDiesel = isDiesel;
+//     let isAirConditioned = isAirConditioned;
 
+//     function getBrand(){
+//         return brand;
+//     }
+
+//     return {
+//         getBrand
+//     }
+// }
+// const rentalCarOld = RentalCarOld({
+//     brand: "BMW",
+//     model: "3.20",
+//     color: "Black",
+//     dailyPrice: 100,
+//     isAutomatic: true,
+//     isDiesel: true,
+//     isAirConditioned: true
+// })
+// rentalCarOld.getBrand();
+
+class RentalCar {
+  //let brand;
+  constructor(
+    // brand, model, color, dailyPrice, isAutomatic, isDiesel, isAirConditioned
+    // rentalCar
+    { brand, model, color, dailyPrice, isAutomatic, isDiesel, isAirConditioned }
+  ) {
+    // this.brand = brand;
+    // this.model = model;
+    // this.color = color;
+    // this.dailyPrice = dailyPrice;
+    // this.isAutomatic = isAutomatic;
+    // this.isDiesel = isDiesel;
+    // this.isAirConditioned = isAirConditioned;
+    this.__brand = brand;
+    this.__model = model;
+    this.__color = color;
+    this.__dailyPrice = dailyPrice;
+    this.__isAutomatic = isAutomatic;
+    this.__isDiesel = isDiesel;
+    this.__isAirConditioned = isAirConditioned;
+
+    this.__lastRentalDate = null;
+    this.__lastRentalDateDeadline = null;
+  }
+
+  getBrand() {
+    // Bazi kontrolleri burada yapabiliriz
+    return this.__brand;
+  }
+
+  getModel() {
+    return this.__model;
+  }
+
+  getColor() {
+    return this.__color;
+  }
+
+  setColor(color) {
+    this.__color = color;
+    // return undefined; // Default
+    return this;
+  } // Varsayılan dönüş değeri undefined'dır.
+
+  getDailyPrice() {
+    return this.__dailyPrice;
+  }
+
+  setDailyPrice(dailyPrice) {
+    this.__dailyPrice = dailyPrice;
+    return this;
+  }
+
+  getIsAutomatic() {
+    return this.__isAutomatic;
+  }
+
+  getIsDiesel() {
+    return this.__isDiesel;
+  }
+
+  getIsAirConditioned() {
+    return this.__isAirConditioned;
+  }
+
+  setIsAirConditioned(isAirConditioned) {
+    this.__isAirConditioned = isAirConditioned;
+    return this;
+  }
+
+  rent(rentalDeadline) {
+    this.__lastRentalDate = new Date();
+    this.__lastRentalDateDeadline = rentalDeadline;
+    return this;
+  }
+
+  save() {
+    console.log(this, "saved");
+    // save metodu fluent yapının son halkasıysa, 
+    // En sonki uygulanacak operasyon işlemi ise, iş akışında başka operasyon işlemi kalmamış demektir.
+    // yani dönüş değeri tanımlmaya gerek yoktur.
+  }
+}
+// const rentalCar = new RentalCar("BMW", "3.20", "Black", 100, true, true, true);
+const rentalCar = new RentalCar({
+  // new'leyerek yeni bir instance referansı oluşturulur. this ise bu referansa işaret eder.
+  // instance // örnek referansı
+  brand: "BMW",
+  model: "3.20",
+  color: "Black",
+  dailyPrice: 100,
+  isAutomatic: true,
+  isDiesel: true,
+  isAirConditioned: true,
+});
+// rentalCar.brand = "Mercedes";
+// rentalCar.__brand // getter ve setter'lar ile erişilebilir hale getirilmeli
+const rentalCarBrand = rentalCar.getBrand();
+//rentalCar.setBrand("Mercedes"); // İzin verilmiyor
+// rentalCar.setColor("Red");
+// rentalCar.setIsAirConditioned(false);
+// rentalCar.setDailyPrice(150);
+// rentalCar.rent(new Date(2023, 5, 30));
+// rentalCar.save();
+
+// fluent
+//rentalCar.setColor("Red") undefined .setIsAirConditioned;
+rentalCar.setColor("Red") // rentalCar değişkeninin işaret ettiği referansı bize geri dönüyor.
+         .setIsAirConditioned(false) // referans dahilinde olan, obje içerisindeki diğer alanlara da erişebiliyoruz.
+         .setDailyPrice(150)
+         .rent(new Date(2023, 5, 30))
+         .save();
 //#endregion
