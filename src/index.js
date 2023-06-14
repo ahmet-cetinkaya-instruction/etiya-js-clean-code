@@ -680,34 +680,103 @@ class Customer extends User {
 }
 
 class IndividualCustomer extends Customer {
-    constructor({ id, firstName, lastName, tcNo, membershipDate }) {
-        super({ id, membershipDate });
-        this.__firstName = firstName;
-        this.__lastName = lastName;
-        this.__tcNo = tcNo;
-    }
+  constructor({ id, firstName, lastName, tcNo, membershipDate }) {
+    super({ id, membershipDate });
+    this.__firstName = firstName;
+    this.__lastName = lastName;
+    this.__tcNo = tcNo;
+  }
 }
 
 class CorporateCustomer extends Customer {
-    constructor({ id, companyName, taxNo, membershipDate }) {
-        super({ id, membershipDate });
-        this.__companyName = companyName;
-        this.__taxNo = taxNo;
-    }
+  constructor({ id, companyName, taxNo, membershipDate }) {
+    super({ id, membershipDate });
+    this.__companyName = companyName;
+    this.__taxNo = taxNo;
+  }
 }
 
 const individualCustomer = new IndividualCustomer({
-    id: 1,
-    firstName: "Ahmet",
-    lastName: "Çetinkaya",
-    tcNo: "12345678901",
-    membershipDate: "01.01.2020",
+  id: 1,
+  firstName: "Ahmet",
+  lastName: "Çetinkaya",
+  tcNo: "12345678901",
+  membershipDate: "01.01.2020",
 }); // Bireysel Müşterimiz
 const corporateCustomer = new CorporateCustomer({
-    id: 2,
-    companyName: "Etiya",
-    taxNo: "12345678901",
-    membershipDate: "01.01.2020",
+  id: 2,
+  companyName: "Etiya",
+  taxNo: "12345678901",
+  membershipDate: "01.01.2020",
 }); // Kurumsal Müşterimiz
+
+// Interaface Segregation Principle (Arayüz Ayrımı Prensibi) (interface)
+
+// TypeScript ve Angular
+// class AComponent implemends OnInit, OnChanges, OnDestroy {
+//     ngOnInit() {}
+
+//     ngOnChanges() {}
+
+//     ngOnDestroy() {}
+// }
+
+// class BComponent implemends OnInit, OnChanges {
+//     ngOnInit() {}
+
+//     ngOnChanges() {}
+// }
+
+// const aComponent: OnInit = new AComponent();
+// aComponent.ngOnInit();
+
+// class DOMTraverser{
+//     constructor(settings){
+//         this.__settings = settings;
+//         this.setup();
+//     }
+
+//     setup(){
+//         this.__rootNode = this.__settings.rootNode;
+//         this.__settings.animationModule().setup();
+//     }
+
+//     traverse(){
+//         // ... traverse işlemleri
+//     }
+// }
+
+// const $ = new DOMTraverser({
+//     rootNode: document.getElementsByTagName("body"),
+//     animationModule(){}
+// });
+
+class DOMTraverser {
+  constructor({ rootNode, options: { animationModule } }) {
+    this.__options = options;
+    this.setup(rootNode);
+  }
+
+  setup(rootNode) {
+    this.__rootNode = rootNode;
+    this.setupOptions();
+  }
+
+  setupOptions() {
+    if (this.__options.animationModule)
+      this.__options.animationModule().setup();
+  }
+
+  traverse() {
+    // ... traverse işlemleri
+  }
+}
+
+const $ = new DOMTraverser({
+  rootNode: document.getElementsByTagName("body"),
+  options: {
+    animationModule() {},
+  },
+});
 
 //#endregion
