@@ -410,7 +410,7 @@ rentalCar
 
 //#region SOLID
 
-// Single Responsibility Principle
+// Single Responsibility Principle (Tek Sorumluluk Prensibi)
 
 // class UserSettings {
 //     constructor(user){
@@ -475,5 +475,239 @@ const userSettings = new UserSettings(user, userAuth);
 const userAccount = new UserAccount(user, userAuth);
 userSettings.changeSettings({ emailAds: false, darkMode: true });
 userAccount.changePassword("12345");
+
+// Open Closed Principle (Açık Kapalı Prensibi)
+
+// class Adapter{
+//     constructor(){}
+// }
+
+// class AjaxAdapter extends Adapter{
+//     constructor(){
+//         super();
+//         this.__name = "AjaxAdapter";
+//     }
+
+//     getName(){
+//         return this.__name;
+//     }
+// }
+
+// class NodeAdapter extends Adapter{
+//     constructor(){
+//         super();
+//         this.__name = "NodeAdapter";
+//     }
+
+//     getName(){
+//         return this.__name;
+//     }
+// }
+
+// class SocketAdapter extends Adapter{
+//     constructor(){
+//         super();
+//         this.__name = "SocketAdapter";
+//     }
+
+//     getName(){
+//         return this.__name;
+//     }
+// }
+
+// class HttpRequester {
+//     constructor(adapter){
+//         this.__adapter = adapter;
+//     }
+
+//     fetch(url){
+//         if(this.__adapter.getName() === "AjaxAdapter"){
+//             return makeAjaxCall(url).then((response) => {});
+//         } else if (this.__adapter.getName() === "NodeAdapter"){
+//             return makeHttpCall(url).then((response) => {});
+//         } else if (this.__adapter.getName() == "SockerAdapter"){
+//             return makeSocketCall(url).then((response) => {});
+//         }
+//     }
+// }
+
+// function makeAjaxCall(url){
+//     // ... url'e ajax isteği atılır ve promise döner
+// }
+
+// function makeHttpCall(url){
+//     // ... url'e http isteği atılır ve promise döner
+// }
+
+// function makeSocketCall(url){
+//     // ... url'e socket isteği atılır ve promise döner
+// }
+
+class Adapter {
+  constructor() {}
+
+  request(url) {
+    // abstract method
+    throw new Error("Request method must be implemented");
+  }
+}
+
+class AjaxAdapter extends Adapter {
+  constructor() {
+    super();
+    this.__name = "AjaxAdapter";
+  }
+
+  getName() {
+    return this.__name;
+  }
+
+  request(url) {
+    // ... url'e ajax isteği atılır ve promise döner
+  }
+}
+
+class NodeAdapter extends Adapter {
+  constructor() {
+    super();
+    this.__name = "NodeAdapter";
+  }
+
+  getName() {
+    return this.__name;
+  }
+
+  request(url) {
+    // ... url'e http isteği atılır ve promise döner
+  }
+}
+
+class SocketAdapter extends Adapter {
+  constructor() {
+    super();
+    this.__name = "SocketAdapter";
+  }
+
+  getName() {
+    return this.__name;
+  }
+
+  request(url) {
+    // ... url'e socket isteği atılır ve promise döner
+  }
+}
+
+class HttpRequester {
+  constructor(adapter) {
+    this.__adapter = adapter;
+  }
+
+  fetch(url) {
+    // promise döner
+    return this.__adapter.request(url).then((response) => {
+      // ... response üzerinde ek işlemler yapılabilir
+    });
+  }
+}
+
+const adapter = new SocketAdapter(); // İlgili config veya modül dosyasından Adapter'a karşılık gelen teknoloji alternatifi okunabilir ve değiştirilebilir
+const httpRequester = new HttpRequester(adapter);
+httpRequester.fetch("https://www.google.com").then((response) => {
+  console.log(response);
+});
+
+// Liskov Substitution Principle (Liskov'un Yerine Geçme Prensibi)
+class User {
+  constructor({ id }) {
+    this.__id = id;
+  }
+}
+// class Customer extends User {
+//   constructor({ id, firstName, lastName, membershipDate, type }) {
+//     super({ id });
+//     this.__firstName = firstName;
+//     this.__lastName = lastName;
+//     this.__membershipDate = membershipDate;
+//     this.__type = type;
+//   }
+
+//   setFirstName(firstName) {
+//     if (this.__type === "corporate") {
+//       // Kurumsal müşterilere göre işlemler ve kontroller
+//       this.__firstName = firstName;
+//     } else if (this.__type === "individual") {
+//       // Bireysel müşterilere göre işlemler ve kontroller
+//       this.__firstName = firstName;
+//     }
+//     return this;
+//   }
+
+//   setLastName(lastName) {
+//     if (this.__type === "corporate") {
+//       // Kurumsal müşterilere göre işlemler ve kontroller
+//       this.__lastName = lastName;
+//     } else if (this.__type === "individual") {
+//       // Bireysel müşterilere göre işlemler ve kontroller
+//       this.__lastName = lastName;
+//     }
+//     return this;
+//   }
+
+//   save() {
+//     if (this.__firstName === undefined)
+//       throw new Error("First name is required");
+//     if (this.__type === "individual" && this.__lastName === undefined) throw new Error("Last name is required");
+//   }
+// }
+
+// const customer = new Customer({
+//   id: 1,
+//   firstName: "Ahmet",
+//   lastName: "Çetinkaya",
+//   membershipDate: "01.01.2020",
+// }); // Bireysel Müşterimiz
+// const customer2 = new Customer({
+//   id: 2,
+//   firstName: "Etiya",
+//   membershipDate: "01.01.2020",
+// }); // Kurumsal Müşterimiz
+
+class Customer extends User {
+  constructor({ id, membershipDate }) {
+    super({ id });
+    this.__membershipDate = membershipDate;
+  }
+}
+
+class IndividualCustomer extends Customer {
+    constructor({ id, firstName, lastName, tcNo, membershipDate }) {
+        super({ id, membershipDate });
+        this.__firstName = firstName;
+        this.__lastName = lastName;
+        this.__tcNo = tcNo;
+    }
+}
+
+class CorporateCustomer extends Customer {
+    constructor({ id, companyName, taxNo, membershipDate }) {
+        super({ id, membershipDate });
+        this.__companyName = companyName;
+        this.__taxNo = taxNo;
+    }
+}
+
+const individualCustomer = new IndividualCustomer({
+    id: 1,
+    firstName: "Ahmet",
+    lastName: "Çetinkaya",
+    tcNo: "12345678901",
+    membershipDate: "01.01.2020",
+}); // Bireysel Müşterimiz
+const corporateCustomer = new CorporateCustomer({
+    id: 2,
+    companyName: "Etiya",
+    taxNo: "12345678901",
+    membershipDate: "01.01.2020",
+}); // Kurumsal Müşterimiz
 
 //#endregion
