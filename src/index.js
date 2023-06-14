@@ -172,7 +172,13 @@ function sendMail({ toEmail, subject, body }) {
 }
 
 // Başka fonskiyonlara bu noktadan devam edilmeli.
-
+// httpClient.get().subscribe({
+//     next: (data) => {
+//     },
+//     complete: (err) => {
+//     }
+// });
+// next, error, complete
 //#endregion
 
 //#region Nesne ve Sınıflar
@@ -364,9 +370,10 @@ class RentalCar {
 
   save() {
     console.log(this, "saved");
-    // save metodu fluent yapının son halkasıysa, 
+    // save metodu fluent yapının son halkasıysa,
     // En sonki uygulanacak operasyon işlemi ise, iş akışında başka operasyon işlemi kalmamış demektir.
     // yani dönüş değeri tanımlmaya gerek yoktur.
+    return undefined;
   }
 }
 // const rentalCar = new RentalCar("BMW", "3.20", "Black", 100, true, true, true);
@@ -393,9 +400,80 @@ const rentalCarBrand = rentalCar.getBrand();
 
 // fluent
 //rentalCar.setColor("Red") undefined .setIsAirConditioned;
-rentalCar.setColor("Red") // rentalCar değişkeninin işaret ettiği referansı bize geri dönüyor.
-         .setIsAirConditioned(false) // referans dahilinde olan, obje içerisindeki diğer alanlara da erişebiliyoruz.
-         .setDailyPrice(150)
-         .rent(new Date(2023, 5, 30))
-         .save();
+rentalCar
+  .setColor("Red") // rentalCar değişkeninin işaret ettiği referansı bize geri dönüyor.
+  .setIsAirConditioned(false) // referans dahilinde olan, obje içerisindeki diğer alanlara da erişebiliyoruz.
+  .setDailyPrice(150)
+  .rent(new Date(2023, 5, 30))
+  .save();
+//#endregion
+
+//#region SOLID
+
+// Single Responsibility Principle
+
+// class UserSettings {
+//     constructor(user){
+//         this.__user = user;
+//     }
+
+//     changeSettings(settings){ // Kullanınıcı tercihleri yönetimi
+//         if(this.verifyCredentials()){
+//             // ... değişiklikler kaydedilir
+//             if(settings.newPassword){ // Kullancının hesap bilgilerini yönetimi
+//                 // ... şifre değiştirilir
+//             }
+//         }
+//     }
+
+//     // metot kendi başına tek sorumlu gibi gözükse kendini tam olarak temsil etmeyen sınıf içerisinde olduğu için yine tek sorumlu ilkesine uymuyor diyebiliriz.
+//     verifyCredentials(){ // Yetkilendirme işlemleri
+//         // ... kullanıcı bilgileri kontrol edilir
+//     }
+// }
+
+class UserSettings {
+  constructor(user, userAuth) {
+    this.__user = user;
+    this.__userAuth = userAuth;
+  }
+
+  changeSettings(settings) {
+    // Kullanınıcı tercihleri yönetimi
+    if (this.__userAuth.verifyCredentials()) {
+      // ... değişiklikler kaydedilir
+    }
+  }
+}
+
+class UserAccount {
+  constructor(user, userAuth) {
+    this.__user = user;
+    this.__userAuth = userAuth;
+  }
+
+  changePassword(newPassword) {
+    if (this.__userAuth.verifyCredentials()) {
+      // ... şifre değiştirilir
+    }
+  }
+}
+
+class UserAuth {
+  constructor(user) {
+    this.__user = user;
+  }
+
+  verifyCredentials() {
+    // ... kullanıcı bilgileri kontrol edilir
+  }
+}
+
+const user = { name: "Mehmet", password: "1234", settings: {} };
+const userAuth = new UserAuth(user);
+const userSettings = new UserSettings(user, userAuth);
+const userAccount = new UserAccount(user, userAuth);
+userSettings.changeSettings({ emailAds: false, darkMode: true });
+userAccount.changePassword("12345");
+
 //#endregion
