@@ -610,7 +610,10 @@ class HttpRequester {
   }
 }
 
-const adapter = new SocketAdapter(); // İlgili config veya modül dosyasından Adapter'a karşılık gelen teknoloji alternatifi okunabilir ve değiştirilebilir
+// inversionOfControl.js
+export const adapter = new SocketAdapter(); // İlgili config veya modül dosyasından Adapter'a karşılık gelen teknoloji alternatifi okunabilir ve değiştirilebilir
+// app.js
+import { adapter } from "./inversionOfControl.js";
 const httpRequester = new HttpRequester(adapter);
 httpRequester.fetch("https://www.google.com").then((response) => {
   console.log(response);
@@ -710,7 +713,7 @@ const corporateCustomer = new CorporateCustomer({
   membershipDate: "01.01.2020",
 }); // Kurumsal Müşterimiz
 
-// Interaface Segregation Principle (Arayüz Ayrımı Prensibi) (interface)
+// Interface Segregation Principle (Arayüz Ayrımı Prensibi) (interface)
 
 // TypeScript ve Angular
 // class AComponent implemends OnInit, OnChanges, OnDestroy {
@@ -727,6 +730,7 @@ const corporateCustomer = new CorporateCustomer({
 //     ngOnChanges() {}
 // }
 
+// JS'de interface bulunmadığı için bu prepsib genel olarak options isminde bir argüman objesi ile sağlanır
 // const aComponent: OnInit = new AComponent();
 // aComponent.ngOnInit();
 
@@ -778,5 +782,58 @@ const $ = new DOMTraverser({
     animationModule() {},
   },
 });
+
+// Dependency Inversion Principle (Bağımlılıkların Ters Çevrilmesi Prensibi)
+
+// Dependency Injection (Bağımlılık Enjeksiyonu) ile sağlanır.
+
+// TypeScript ve Angular için örnek:
+// class AComponent {
+//     constructor(private httpClint: HttpClient) {} // Angular bizim için istediğimiz referansı bir bağımlılık enjeksiyonu ile sağlanır
+// }
+// TypeScript'de interface olmasına rağmen,
+// sadece geliştirme ortamını destekler yani havada obje oluştururken (const a = {}) bu objenin interface içindeki imzalara uyup uymadığı editör üzerinden kontrol edilir.
+// çalışma anında interface bizim için bir anlam ifade etmiyor.
+
+// class BaseHttpClient {
+//     get(url){
+//         throw new Error("Not Implemented");
+//     }
+//     post(url, data){
+//         throw new Error("Not Implemented");
+//     }
+// }
+
+// class HttpClient extends BaseHttpClient { // Angular içerisinde hali hazırda tanımlı
+//     get(url){
+//         // ... get işlemleri
+//     }
+//     post(url, data){
+//         // ... post işlemleri
+//     }
+// }
+
+// // Alternatif olarak constant kullanabilirsiniz.
+// const BASE_HTTP_CLIENT = "BASE_HTTP_CLIENT";
+
+// class AComponent {
+//     constructor(private httpClient: BaseHttpClient) {} // Angular bizim için istediğimiz referansı bir bağımlılık enjeksiyonu ile sağlanır
+//     constructor(@Inject(BASE_HTTP_CLIENT) private httpClient: BaseHttpClient) {} // Angular bizim için istediğimiz referansı bir bağımlılık enjeksiyonu ile sağlanır
+// }
+
+// @NgModule({
+//     providers: [
+//         { provide: BaseHttpClient, useClass: HttpClient }, // Angular'ın IoC Container'ına BaseHttpClint tipinde bir nesne istendiğinde HttpClient tipinde bir nesne verilmesi isteniyor.
+//         { provide: BASE_HTTP_CLIENT, useClass: HttpClient } // Angular'ın IoC Container'ına BaseHttpClint tipinde bir nesne istendiğinde HttpClient tipinde bir nesne verilmesi isteniyor.
+//         // BaseHttpClient yerine TS'deki interface'i kullanamıyoruz, çünkü dediğimiz gibi çalışma anında interface bizim için bir anlam ifade etmiyor.
+//         // Dependency Injection yöntemi de bizim için çalışma anında gerçekleşen bir mekanizma.
+//     ]
+// })
+// class AppModule {
+
+// }
+
+// JS üzerinde örnek
+// 435, 546 satır numaralarında başlayan örnekler bunu sağlamaktadır.
 
 //#endregion
